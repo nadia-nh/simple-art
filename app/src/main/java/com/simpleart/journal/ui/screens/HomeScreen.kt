@@ -2,7 +2,9 @@ package com.simpleart.journal.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
@@ -23,8 +25,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.simpleart.journal.ui.components.DailyEditorCard
+import com.simpleart.journal.ui.components.DateNavBar
+import com.simpleart.journal.ui.theme.LocalSpacing
 import com.simpleart.journal.ui.viewmodel.JournalUiState
 import com.simpleart.journal.ui.viewmodel.JournalViewModel
+import java.time.LocalDate
 
 @Composable
 fun HomeScreen(
@@ -39,8 +44,9 @@ fun HomeScreen(
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         HomeScreenContent(
+            uiState = uiState,
             paddingValues = paddingValues,
-            uiState = uiState
+            onDateSelected = { viewModel.selectDate(it) }
         )
     }
 }
@@ -89,8 +95,9 @@ private fun HomeScreenTopBar() {
 
 @Composable
 private fun HomeScreenContent(
-    paddingValues: PaddingValues,
-    uiState: JournalUiState
+    uiState: JournalUiState,
+    onDateSelected: (LocalDate) -> Unit = {},
+    paddingValues: PaddingValues
 ) {
     Column(
         modifier = Modifier
@@ -98,6 +105,14 @@ private fun HomeScreenContent(
             .padding(paddingValues)
             .padding(horizontal = 16.dp)
     ) {
+        val spacing = LocalSpacing.current
+
+        DateNavBar(
+            selectedDate = uiState.selectedDate,
+            onDateSelected = onDateSelected
+        )
+        Spacer(modifier = Modifier.height(spacing.medium))
+
         DailyEditorCard(
             title = uiState.titleDraft,
             content = uiState.contentDraft
