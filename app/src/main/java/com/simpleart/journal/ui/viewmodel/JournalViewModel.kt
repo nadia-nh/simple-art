@@ -9,10 +9,13 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import java.time.LocalDate
 
 data class JournalUiState(
     val titleDraft: String = "",
     val contentDraft: String = "",
+    val selectedDate: LocalDate = LocalDate.now(),
 )
 
 class JournalViewModel(
@@ -28,4 +31,9 @@ class JournalViewModel(
             started = SharingStarted.Lazily,
             initialValue = emptyList()
         )
+
+    fun selectDate(date: LocalDate) {
+        if (_uiState.value.selectedDate == date) return
+        _uiState.update { it.copy(selectedDate = date) }
+    }
 }
